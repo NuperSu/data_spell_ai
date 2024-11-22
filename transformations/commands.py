@@ -8,7 +8,7 @@ def select_columns(df: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
     return df[columns]
 
 def add_column(df: pd.DataFrame, column_name: str, formula: str) -> pd.DataFrame:
-    exec(formula)
+    df[column_name] = df.eval(formula)
     return df
 
 # Mapping of command names to functions
