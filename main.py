@@ -4,6 +4,7 @@ from ai_chat.chat_interface import AIChatInterface
 import os
 from dotenv import load_dotenv  # Import load_dotenv
 
+
 def apply_transformations(df: pd.DataFrame, transformations: list) -> pd.DataFrame:
     for transform in transformations:
         command = transform.get("command")
@@ -14,6 +15,7 @@ def apply_transformations(df: pd.DataFrame, transformations: list) -> pd.DataFra
         else:
             print(f"Unknown command: {command}")
     return df
+
 
 def main():
     load_dotenv()
@@ -44,6 +46,7 @@ def main():
     transformed_df = apply_transformations(df, transformations)
     print("\nTransformed DataFrame:")
     print(transformed_df)
+
 
 if __name__ == "__main__":
     main()

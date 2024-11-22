@@ -5,21 +5,23 @@ from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
 import re
 
+
+def sanitize_ai_response(message: str) -> str:
+    """
+    Removes code fences and any leading/trailing whitespace from the AI response.
+    """
+    pattern = r"```(?:json)?\n?([\s\S]*?)```"
+    match = re.search(pattern, message)
+    if match:
+        return match.group(1).strip()
+    return message.strip()
+
+
 class AIChatInterface:
     def __init__(self, api_key: str = None):
         if api_key:
             os.environ["OPENAI_API_KEY"] = api_key
         self.llm = ChatOpenAI(temperature=0, model_name="gpt-4o-mini")
-
-    def sanitize_ai_response(_, message: str) -> str:
-        """
-        Removes code fences and any leading/trailing whitespace from the AI response.
-        """
-        pattern = r"```(?:json)?\n?([\s\S]*?)```"
-        match = re.search(pattern, message)
-        if match:
-            return match.group(1).strip()
-        return message.strip()
 
     def generate_transformations(self, user_input: str) -> List[Dict[str, Any]]:
         """
@@ -51,7 +53,7 @@ Now, translate the following user input into a sequence of commands:
         )
         prompt_text = prompt.format(input=user_input)
         response = self.llm.invoke(prompt_text)
-        response = self.sanitize_ai_response(response.content)
+        response = sanitize_ai_response(response.content)
 
         try:
             transformations = json.loads(response)
