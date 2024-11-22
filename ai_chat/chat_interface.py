@@ -23,12 +23,15 @@ class AIChatInterface:
             os.environ["OPENAI_API_KEY"] = api_key
         self.llm = ChatOpenAI(temperature=0, model_name="gpt-4o-mini")
 
-    def generate_transformations(self, user_input: str) -> List[Dict[str, Any]]:
+    def generate_transformations(self, user_input: str, columns: List[str]  ) -> List[Dict[str, Any]]:
         """
         Generates a sequence of transformation commands based on user input.
         """
         prompt_template = """
         You are a highly intelligent assistant that translates natural language instructions into a sequence of structured data transformation commands in JSON format. Each command should be a JSON object with a `command` field indicating the type of operation and a `parameters` field containing the details of that operation.
+
+        ### Available Columns:
+        {columns}
 
         ### Available Commands:
         1. **filter**:
@@ -64,6 +67,7 @@ class AIChatInterface:
         2. Ensure the output strictly adheres to JSON formatting, including correct brackets, commas, and quotes.
         3. Interpret user input with precision and map it to the appropriate commands.
         4. Combine multiple instructions from the input into a single sequence of commands.
+        5. Only use the available columns and commands provided in the prompt. Do not introduce new columns or commands.
 
         ### Examples:
 
@@ -101,11 +105,8 @@ class AIChatInterface:
         {input}
         """
 
-        prompt = PromptTemplate(
-            input_variables=["input"],
-            template=prompt_template
-        )
-        prompt_text = prompt.format(input=user_input)
+        columns_list = ", ".join(columns)
+        prompt_text = prompt_template.format(columns=columns_list, input=user_input)
         response = self.llm.invoke(prompt_text)
         response = sanitize_ai_response(response.content)
 

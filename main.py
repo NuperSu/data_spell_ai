@@ -39,7 +39,7 @@ def main():
 
     user_input = input("Enter your data transformation instructions: ")
 
-    transformations = ai_chat.generate_transformations(user_input)
+    transformations = ai_chat.generate_transformations(user_input, df.columns.tolist())
     print("\nGenerated Transformations:")
     print(transformations)
 
