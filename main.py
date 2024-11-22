@@ -1,31 +1,12 @@
 import pandas as pd
-from transformations.commands import COMMANDS
+from transformations.apply_transformations import apply_transformations
 from ai_chat.chat_interface import AIChatInterface
 import os
-from dotenv import load_dotenv  # Import load_dotenv
-from transformations.commands import filter_data, select_columns, add_column
-
-def apply_transformations(df, transformations):
-    for transform in transformations:
-        # Access the command and parameters as attributes of the Command object
-        command = transform.command
-        parameters = transform.parameters
-
-        if command == "filter":
-            df = filter_data(df, **parameters)
-        elif command == "select":
-            df = select_columns(df, **parameters)
-        elif command == "add_column":
-            df = add_column(df, **parameters)
-        else:
-            raise ValueError(f"Unknown command: {command}")
-
-    return df
+from dotenv import load_dotenv
 
 
 def main():
     load_dotenv()
-
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         print("Error: OPENAI_API_KEY not found. Please set it in the .env file.")
