@@ -3,17 +3,23 @@ from transformations.commands import COMMANDS
 from ai_chat.chat_interface import AIChatInterface
 import os
 from dotenv import load_dotenv  # Import load_dotenv
+from transformations.commands import filter_data, select_columns, add_column
 
-
-def apply_transformations(df: pd.DataFrame, transformations: list) -> pd.DataFrame:
+def apply_transformations(df, transformations):
     for transform in transformations:
-        command = transform.get("command")
-        params = transform.get("parameters", {})
-        func = COMMANDS.get(command)
-        if func:
-            df = func(df, **params)
+        # Access the command and parameters as attributes of the Command object
+        command = transform.command
+        parameters = transform.parameters
+
+        if command == "filter":
+            df = filter_data(df, **parameters)
+        elif command == "select":
+            df = select_columns(df, **parameters)
+        elif command == "add_column":
+            df = add_column(df, **parameters)
         else:
-            print(f"Unknown command: {command}")
+            raise ValueError(f"Unknown command: {command}")
+
     return df
 
 
