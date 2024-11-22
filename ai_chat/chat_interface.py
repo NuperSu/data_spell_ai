@@ -31,8 +31,6 @@ def sanitize_ai_response(message: str) -> str:
 
 class AIChatInterface:
     def __init__(self, api_key: str = None):
-        if api_key:
-            os.environ["OPENAI_API_KEY"] = api_key
         self.llm = ChatOpenAI(temperature=0,
                               model_name="gpt-4o")
 
