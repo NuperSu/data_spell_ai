@@ -34,7 +34,7 @@ class AIChatInterface:
         if api_key:
             os.environ["OPENAI_API_KEY"] = api_key
         self.llm = ChatOpenAI(temperature=0,
-                              model_name="gpt-4o-mini")  # don't use gpt-4o because then hard to find bugs
+                              model_name="gpt-4o")
 
         self.output_parser = PydanticOutputParser(pydantic_object=TransformationSequence)
 
